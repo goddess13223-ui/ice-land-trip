@@ -11,7 +11,7 @@
         body { font-family: 'Noto Sans TC', sans-serif; margin: 0; background: var(--bg); color: #2c3e50; overflow-x: hidden; }
 
         /* SPA Framework */
-        .page { display: none; padding: 20px 15px 100px; animation: fadeIn 0.4s ease; }
+        .page { display: none; padding: 20px 15px 140px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -33,10 +33,17 @@
         .tag { display: inline-block; padding: 4px 10px; background: #ebf5fb; color: var(--accent); border-radius: 8px; font-size: 12px; font-weight: bold; margin-bottom: 8px; }
         .btn-nav { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--success); color: white; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 15px; }
 
-        /* Expense & Tools */
+        /* Expense & Tools (已修復手機排版) */
         .tool-section { background: white; border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .input-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; min-width: 120px; }
+        .btn-add { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        @media (max-width: 480px) {
+            .input-row { flex-direction: column; }
+            input, .btn-add { width: 100%; height: 50px; flex: none; }
+        }
+
         .expense-list { margin-top: 15px; border-top: 1px solid #eee; }
         .expense-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #fafafa; }
         .total-box { background: #fdf2f2; padding: 15px; border-radius: 12px; margin-top: 10px; }
@@ -47,9 +54,9 @@
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-btn { border: none; background: none; color: #95a5a6; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .nav-btn { border: none; background: none; color: #95a5a6; font-size: 12px; cursor: pointer; transition: 0.3s; flex: 1; text-align: center; }
         .nav-btn.active { color: var(--accent); font-weight: bold; }
-        .nav-btn i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-btn span { font-size: 24px; display: block; margin-bottom: 4px; }
 
         /* Focus Modal */
         #focus-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; color: white; z-index: 2000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px; }
@@ -75,13 +82,13 @@
 
         <h3>即時監控</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
-            <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" class="day-tab" style="width:100%; border-color:#8e44ad; color:#8e44ad">🌌 極光預測</a>
-            <a href="https://www.road.is/" target="_blank" class="day-tab" style="width:100%; border-color:#e67e22; color:#e67e22">🛣️ 實時路況</a>
+            <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" class="day-tab" style="width:100%; border-color:#8e44ad; color:#8e44ad; text-decoration:none;">🌌 極光預測</a>
+            <a href="https://www.road.is/" target="_blank" class="day-tab" style="width:100%; border-color:#e67e22; color:#e67e22; text-decoration:none;">🛣️ 實時路況</a>
         </div>
         
         <h3>今日概覽</h3>
         <div class="tool-section" id="today-summary">
-            請前往「行程」分頁選擇天數。
+            請前往「行程」分頁選擇天數查看細節。
         </div>
     </div>
 
@@ -93,11 +100,11 @@
     <div id="page-tools" class="page">
         <h3>💰 冰島旅遊記帳 (ISK → TWD)</h3>
         <div class="tool-section">
-            <div style="font-size: 12px; color: #666; margin-bottom: 10px;">目前匯率參考：1 ISK ≈ 0.23 TWD</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 10px;">匯率參考：1 ISK ≈ 0.23 TWD</div>
             <div class="input-row">
                 <input type="text" id="exp-name" placeholder="項目內容">
-                <input type="number" id="exp-amt" placeholder="ISK 金額">
-                <button onclick="addExpense()" style="background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold;">新增</button>
+                <input type="number" id="exp-amt" placeholder="ISK 金額" inputmode="decimal">
+                <button class="btn-add" onclick="addExpense()">新增紀錄</button>
             </div>
             <div id="expense-list" class="expense-list"></div>
             <div class="total-box">
@@ -110,7 +117,7 @@
                     <span id="total-twd">0</span>
                 </div>
             </div>
-            <button onclick="clearExpenses()" style="width: 100%; margin-top: 15px; background: none; border: none; color: #999; font-size: 12px; text-decoration: underline;">清除所有紀錄</button>
+            <button onclick="clearExpenses()" style="width: 100%; margin-top: 20px; background: none; border: none; color: #999; font-size: 13px; text-decoration: underline; cursor: pointer;">清除所有紀錄</button>
         </div>
 
         <h3>🎒 行前檢查清單</h3>
@@ -119,95 +126,102 @@
 
     <div id="page-lang" class="page">
         <h3>溝通輔助圖卡 (點擊放大)</h3>
-        <div class="tool-section" onclick="showFocus('Takk fyrir','Thank you (謝謝)')">謝謝: Takk fyrir</div>
-        <div class="tool-section" onclick="showFocus('Geta fengið reikninginn?','Can I have the bill? (結帳)')">結帳: Geta fengið reikninginn?</div>
-        <div class="tool-section" onclick="showFocus('Hvar er næsta bensínstöð?','Where is the gas station? (加油站在哪？)')">詢問加油站</div>
-        <div class="tool-section" onclick="showFocus('Hjálp! Bíllinn er fastur!','Help! The car is stuck! (救命！車卡住了！)')" style="border: 2px solid var(--danger);">救援請求: Hjálp!</div>
+        <div class="tool-section" onclick="showFocus('Hvar er salernið?','Where is the toilet? (請問廁所在哪裡？)')">🚻 找廁所: Hvar er salernið?</div>
+        <div class="tool-section" onclick="showFocus('Takk fyrir','Thank you (謝謝)')">😊 謝謝: Takk fyrir</div>
+        <div class="tool-section" onclick="showFocus('Geta fengið reikninginn?','Can I have the bill? (結帳)')">💳 結帳: Geta fengið reikninginn?</div>
+        <div class="tool-section" onclick="showFocus('Hvar er næsta bensínstöð?','Where is the gas station? (加油站在哪？)')">⛽ 詢問加油站</div>
+        <div class="tool-section" onclick="showFocus('Hjálp! Bíllinn er fastur!','Help! The car is stuck! (救命！車卡住了！)')" style="border: 2px solid var(--danger);">🆘 救援請求: Hjálp!</div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="switchPage('home')">🏠<br>儀表板</button>
-        <button class="nav-btn" onclick="switchPage('itinerary')">📅<br>行程</button>
-        <button class="nav-btn" onclick="switchPage('tools')">💰<br>工具</button>
-        <button class="nav-btn" onclick="switchPage('lang')">💬<br>溝通</button>
+        <button class="nav-btn active" onclick="switchPage('home', event)"><span>🏠</span>儀表板</button>
+        <button class="nav-btn" onclick="switchPage('itinerary', event)"><span>📅</span>行程</button>
+        <button class="nav-btn" onclick="switchPage('tools', event)"><span>💰</span>工具</button>
+        <button class="nav-btn" onclick="switchPage('lang', event)"><span>💬</span>溝通</button>
     </nav>
 
     <script>
-        const exchangeRate = 0.23; // 1 ISK = 0.23 TWD 
+        const exchangeRate = 0.23; 
         
-        // 完整 13 天行程資料庫 [cite: 38-169]
+        // 完整的 13 天行程資料
         const fullItinerary = {
             1: { title: "9/27 台灣 → 冰島", items: [
-                { tag: "✈️ 交通", name: "國際航班出發", desc: "台灣啟程，夜宿機上。 [cite: 40-43]", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600", map: "Keflavik+Airport" }
+                { tag: "✈️ 交通", name: "國際航班出發", desc: "台灣啟程，夜宿機上。", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600", map: "Keflavik+Airport" }
             ]},
             2: { title: "9/28 抵達雷克雅維克", items: [
-                { tag: "🚗 租車", name: "LOTUS Car Rental 取車", desc: "電話：+354 787 4444。自助取車密碼：+354 7874444 [cite: 46-49]", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600", map: "Lotus+Car+Rental+Keflavik" },
-                { tag: "🏠 住宿", name: "Skólavörðustígur Apartments", desc: "地址: Skólavörðustígur 21A. 停車建議 P2藍/P3綠。 [cite: 51-56]", img: "https://images.unsplash.com/photo-1555854811-8aa32c7edd90?w=600", map: "Skólavörðustígur+21A+Reykjavík" },
-                { tag: "🍴 晚餐", name: "Old Iceland (需訂位)", desc: "推薦：Icelandic Lamb Soup。預算 NT$1,500–2,000/人。 [cite: 58-61]", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600", map: "Old+Iceland+Restaurant" },
-                { tag: "📍 市區", name: "彩虹街 & 哈爾格林姆教堂", desc: "包含 Laugavegur 主街採買 (Bonus 小豬超市)。 [cite: 63-66]", img: "https://images.unsplash.com/photo-1529963183134-61a90db47eaf?w=600", map: "Hallgrimskirkja" }
+                { tag: "🚗 租車", name: "LOTUS Car Rental 取車", desc: "電話：+354 787 4444。自助取車密碼：+354 7874444", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600", map: "Lotus+Car+Rental+Keflavik" },
+                { tag: "🏠 住宿", name: "Skólavörðustígur Apartments", desc: "地址: Skólavörðustígur 21A。停車建議 P2藍/P3綠。", img: "https://images.unsplash.com/photo-1555854811-8aa32c7edd90?w=600", map: "Skólavörðustígur+21A+Reykjavík" },
+                { tag: "🍴 晚餐", name: "Old Iceland (需訂位)", desc: "推薦：Icelandic Lamb Soup。預算 NT$1,500–2,000/人。", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600", map: "Old+Iceland+Restaurant" },
+                { tag: "📍 市區", name: "彩虹街 & 哈爾格林姆教堂", desc: "包含 Laugavegur 主街採買 (Bonus 小豬超市)。", img: "https://images.unsplash.com/photo-1529963183134-61a90db47eaf?w=600", map: "Hallgrimskirkja" }
             ]},
             3: { title: "9/29 斯奈山半島", items: [
-                { tag: "☕ 早餐", name: "Bakari Sandholt", desc: "7:30 營業。推薦肉桂捲與可頌。 [cite: 68]", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600", map: "Sandholt+Reykjavik" },
-                { tag: "📍 景點", name: "Ytri Tunga 海豹沙灘 & 教會山", desc: "斯奈山經典地標 Kirkjufell。 [cite: 70-71]", img: "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=600", map: "Kirkjufell" },
-                { tag: "🍴 晚餐", name: "Harbour Café", desc: "必點：Plokkfiskur (鱈魚馬鈴薯泥)。魚湯附麵包頂級。 [cite: 74]", img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600", map: "Harbour+Café+Grundarfjörður" }
+                { tag: "☕ 早餐", name: "Bakari Sandholt", desc: "7:30 營業。推薦肉桂捲與可頌。", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600", map: "Sandholt+Reykjavik" },
+                { tag: "📍 景點", name: "Ytri Tunga 海豹沙灘 & 教會山", desc: "斯奈山經典地標 Kirkjufell。", img: "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=600", map: "Kirkjufell" },
+                { tag: "🍴 晚餐", name: "Harbour Café", desc: "必點：Plokkfiskur (鱈魚馬鈴薯泥)。魚湯附麵包頂級。", img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600", map: "Harbour+Café+Grundarfjörður" }
             ]},
             4: { title: "9/30 雷克雅維克 → 西部", items: [
-                { tag: "📍 市區", name: "太陽航海者 & 音樂廳", desc: "托寧湖散步，午餐吃 Bæjarins Beztu Pylsur 熱狗。 [cite: 82-85]", img: "https://images.unsplash.com/photo-1517524285303-d6fc683dddf8?w=600", map: "Harpa+Concert+Hall" },
-                { tag: "🍴 晚餐", name: "Messinn Reykjavík", desc: "推薦：Arctic Char & Seafood Pasta。 [cite: 87-88]", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600", map: "Messinn+Reykjavík" },
-                { tag: "🏠 住宿", name: "Hraunsnef Country Hotel", desc: "西部農場風格旅館。 [cite: 94]", img: "https://images.unsplash.com/photo-1507502707541-f369a3b18502?w=600", map: "Hraunsnef+Country+Hotel" }
+                { tag: "📍 市區", name: "太陽航海者 & 音樂廳", desc: "托寧湖散步，午餐吃 Bæjarins Beztu Pylsur 熱狗。", img: "https://images.unsplash.com/photo-1517524285303-d6fc683dddf8?w=600", map: "Harpa+Concert+Hall" },
+                { tag: "🍴 晚餐", name: "Messinn Reykjavík", desc: "推薦：Arctic Char & Seafood Pasta。", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600", map: "Messinn+Reykjavík" },
+                { tag: "🏠 住宿", name: "Hraunsnef Country Hotel", desc: "西部農場風格旅館。", img: "https://images.unsplash.com/photo-1507502707541-f369a3b18502?w=600", map: "Hraunsnef+Country+Hotel" }
             ]},
             5: { title: "10/1 西部 → 北部", items: [
-                { tag: "📍 景點", name: "熔岩瀑布 Hraunfossar", desc: "絕美藍色流水。補給站：鯨魚教堂。 [cite: 99-100]", img: "https://images.unsplash.com/photo-1520050206274-a1af4463d84d?w=600", map: "Hraunfossar" },
-                { tag: "🏠 住宿", name: "Sigló Hótel", desc: "包含早餐，位於 Siglufjörður。 [cite: 102-103]", img: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=600", map: "Siglo+Hotel" }
+                { tag: "📍 景點", name: "熔岩瀑布 Hraunfossar", desc: "絕美藍色流水。補給站：鯨魚教堂。", img: "https://images.unsplash.com/photo-1520050206274-a1af4463d84d?w=600", map: "Hraunfossar" },
+                { tag: "🏠 住宿", name: "Sigló Hótel", desc: "包含早餐，位於 Siglufjörður。", img: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=600", map: "Siglo+Hotel" }
             ]},
             6: { title: "10/2 北部經典線", items: [
-                { tag: "📍 景點", name: "眾神瀑布 Goðafoss", desc: "阿庫雷里補給 (Bonus/Netto)。 [cite: 107-108]", img: "https://images.unsplash.com/photo-1520050206274-a1af4463d84d?w=600", map: "Godafoss" },
-                { tag: "♨️ 體驗", name: "米湖溫泉 Mývatn Nature Baths", desc: "12:00–22:00。地熱谷 Hverir 景觀。 [cite: 111-112]", img: "https://images.unsplash.com/photo-1502452213796-f4c28f607f3c?w=600", map: "Myvatn+Nature+Baths" }
+                { tag: "📍 景點", name: "眾神瀑布 Goðafoss", desc: "阿庫雷里補給 (Bonus/Netto)。", img: "https://images.unsplash.com/photo-1520050206274-a1af4463d84d?w=600", map: "Godafoss" },
+                { tag: "♨️ 體驗", name: "米湖溫泉 Mývatn Nature Baths", desc: "12:00–22:00。地熱谷 Hverir 景觀。", img: "https://images.unsplash.com/photo-1502452213796-f4c28f607f3c?w=600", map: "Myvatn+Nature+Baths" }
             ]},
             7: { title: "10/3 東部峽灣", items: [
-                { tag: "📍 景點", name: "Dettifoss & 洞穴溫泉", desc: "包含 Stuðlafoss 玄武岩瀑布。 [cite: 118-121]", img: "https://images.unsplash.com/photo-1490682143124-c152463e7a33?w=600", map: "Dettifoss" },
-                { tag: "🎬 景點", name: "Seyðisfjörður", desc: "白日夢冒險王拍攝地。晚餐 Kaffi Lára。 [cite: 123-125]", img: "https://images.unsplash.com/photo-1520638575003-887469733c70?w=600", map: "Seyðisfjörður" }
+                { tag: "📍 景點", name: "Dettifoss & 洞穴溫泉", desc: "包含 Stuðlafoss 玄武岩瀑布。", img: "https://images.unsplash.com/photo-1490682143124-c152463e7a33?w=600", map: "Dettifoss" },
+                { tag: "🎬 景點", name: "Seyðisfjörður", desc: "白日夢冒險王拍攝地。晚餐 Kaffi Lára。", img: "https://images.unsplash.com/photo-1520638575003-887469733c70?w=600", map: "Seyðisfjörður" }
             ]},
             8: { title: "10/4 冰川探險 (Day 1)", items: [
-                { tag: "❄️ 重點", name: "Blue Ice Cave Adventure", desc: "09:00 出發。8人小團。已付款。 [cite: 133-135]", img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600", map: "Vatnajökull+National+Park" },
-                { tag: "🏠 住宿", name: "Skyrhúsid Guesthouse", desc: "連住二晚。 [cite: 130]", img: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600", map: "Skyrhúsid" }
+                { tag: "❄️ 重點", name: "Blue Ice Cave Adventure", desc: "09:00 出發。8人小團。已付款。", img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600", map: "Vatnajökull+National+Park" },
+                { tag: "🏠 住宿", name: "Skyrhúsid Guesthouse", desc: "連住二晚。", img: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600", map: "Skyrhúsid" }
             ]},
             9: { title: "10/5 冰川健行 (Day 2)", items: [
-                { tag: "📍 區域", name: "冰川周邊深度遊", desc: "連住 Skyrhúsid，建議預留體力。 [cite: 128-131]", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600", map: "Skyrhúsid" }
+                { tag: "📍 區域", name: "冰川周邊深度遊", desc: "連住 Skyrhúsid，建議預留體力。", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600", map: "Skyrhúsid" }
             ]},
             10: { title: "10/6 冰河湖", items: [
-                { tag: "🛶 體驗", name: "冰河湖遊船 & 鑽石沙灘", desc: "Jökulsárlón & Fjallsárlón。 [cite: 137-140]", img: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=600", map: "Jökulsárlón" },
-                { tag: "🍴 晚餐", name: "Kjarr Restaurant & Bar", desc: "推薦：Seafood pasta / Arctic char。 [cite: 143]", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600", map: "Kjarr+Restaurant" }
+                { tag: "🛶 體驗", name: "冰河湖遊船 & 鑽石沙灘", desc: "Jökulsárlón & Fjallsárlón。", img: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=600", map: "Jökulsárlón" },
+                { tag: "🍴 晚餐", name: "Kjarr Restaurant & Bar", desc: "推薦：Seafood pasta / Arctic char。", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600", map: "Kjarr+Restaurant" }
             ]},
             11: { title: "10/7 南岸瀑布線", items: [
-                { tag: "🌊 景點", name: "斯科加 & 塞里雅蘭瀑布", desc: "必吃 Mia's Country Van 炸魚薯條。 ", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600", map: "Skogafoss" },
-                { tag: "🏖️ 景點", name: "Vik 黑沙灘", desc: "Ströndin Pub 牛肉漢堡。 [cite: 148]", img: "https://images.unsplash.com/photo-1504541891213-1b1dfdadb739?w=400", map: "Reynisfjara+Beach" }
+                { tag: "🌊 景點", name: "斯科加 & 塞里雅蘭瀑布", desc: "必吃 Mia's Country Van 炸魚薯條。", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600", map: "Skogafoss" },
+                { tag: "🏖️ 景點", name: "Vik 黑沙灘", desc: "Ströndin Pub 牛肉漢堡。", img: "https://images.unsplash.com/photo-1504541891213-1b1dfdadb739?w=400", map: "Reynisfjara+Beach" }
             ]},
             12: { title: "10/8 黃金圈", items: [
-                { tag: "🌋 景點", name: "火口湖 & 間歇泉", desc: "Kerið、Strokkur、Gullfoss、辛格韋德利。 [cite: 156-160]", img: "https://images.unsplash.com/photo-1533560235473-19601cb8969f?w=600", map: "Geysir" }
+                { tag: "🌋 景點", name: "火口湖 & 間歇泉", desc: "Kerið、Strokkur、Gullfoss、辛格韋德利。", img: "https://images.unsplash.com/photo-1533560235473-19601cb8969f?w=600", map: "Geysir" }
             ]},
             13: { title: "10/9 溫泉 & 還車", items: [
-                { tag: "♨️ 體驗", name: "Sky Lagoon", desc: "11:00–22:00。最後的放鬆。 [cite: 164]", img: "https://images.unsplash.com/photo-1510218830377-1e9c2170bb07?w=600", map: "Sky+Lagoon" },
-                { tag: "🚗 還車", name: "20:00 LOTUS 還車", desc: "飯店接駁前往 Aurora Hotel Airport。 [cite: 166-169]", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600", map: "Lotus+Car+Rental+Keflavik" }
+                { tag: "♨️ 體驗", name: "Sky Lagoon", desc: "11:00–22:00。最後的放鬆。", img: "https://images.unsplash.com/photo-1510218830377-1e9c2170bb07?w=600", map: "Sky+Lagoon" },
+                { tag: "🚗 還車", name: "20:00 LOTUS 還車", desc: "飯店接駁前往 Aurora Hotel Airport。", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600", map: "Lotus+Car+Rental+Keflavik" }
             ]}
         };
 
         const checklistItems = ["護照正本 & 駕照正本", "信用卡 (帶2張預防萬一)", "防水外套 & 防水褲 (瀑布用)", "登山鞋/防水鞋", "毛帽、圍巾、防水手套", "泳裝 (泡溫泉用)", "小豬超市購物袋", "手機離線地圖下載"];
 
         // SPA Navigation
-        function switchPage(pageId) {
+        function switchPage(pageId, event) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if(event) {
+                event.currentTarget.classList.add('active');
+            }
             window.scrollTo(0,0);
         }
 
         // Render Day Itinerary
         function renderDay(d) {
             document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-day-' + d).classList.add('active');
+            const targetTab = document.getElementById('tab-day-' + d);
+            if(targetTab) targetTab.classList.add('active');
+            
             const data = fullItinerary[d];
+            if(!data) return;
+            
             let html = `<h3>${data.title}</h3>`;
             data.items.forEach(item => {
                 html += `
@@ -216,8 +230,8 @@
                         <div class="card-body">
                             <span class="tag">${item.tag}</span>
                             <div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${item.name}</div>
-                            <p style="font-size:14px; color:#666; margin:0;">${item.desc}</p>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${item.map}" target="_blank" class="btn-nav">📍 開啟導航</a>
+                            <p style="font-size:14px; color:#666; margin:0 0 15px 0;">${item.desc}</p>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}" target="_blank" class="btn-nav">📍 開啟導航</a>
                         </div>
                     </div>
                 `;
@@ -229,32 +243,32 @@
         function addExpense() {
             const name = document.getElementById('exp-name').value;
             const amt = document.getElementById('exp-amt').value;
-            if(!name || !amt) return;
-            const exps = JSON.parse(localStorage.getItem('ice_exp') || '[]');
+            if(!name || !amt) { alert('請填寫內容與金額'); return; }
+            const exps = JSON.parse(localStorage.getItem('ice_exp_2026') || '[]');
             exps.push({name, isk: parseFloat(amt)});
-            localStorage.setItem('ice_exp', JSON.stringify(exps));
+            localStorage.setItem('ice_exp_2026', JSON.stringify(exps));
             document.getElementById('exp-name').value = '';
             document.getElementById('exp-amt').value = '';
             loadExpenses();
         }
 
         function loadExpenses() {
-            const exps = JSON.parse(localStorage.getItem('ice_exp') || '[]');
+            const exps = JSON.parse(localStorage.getItem('ice_exp_2026') || '[]');
             const list = document.getElementById('expense-list');
             let totalIsk = 0;
             list.innerHTML = exps.map(e => {
                 totalIsk += e.isk;
-                return `<div class="expense-item"><span>${e.name}</span><span>${e.isk} ISK</span></div>`;
-            }).join('');
+                return `<div class="expense-item"><span>${e.name}</span><span>${e.isk.toLocaleString()} ISK</span></div>`;
+            }).reverse().join('');
             document.getElementById('total-isk').innerText = totalIsk.toLocaleString();
-            document.getElementById('total-twd').innerText = (totalIsk * exchangeRate).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('total-twd').innerText = Math.round(totalIsk * exchangeRate).toLocaleString();
         }
 
-        function clearExpenses() { if(confirm('清除所有記帳資料？')) { localStorage.removeItem('ice_exp'); loadExpenses(); } }
+        function clearExpenses() { if(confirm('清除所有記帳資料？')) { localStorage.removeItem('ice_exp_2026'); loadExpenses(); } }
 
         // Checklist System
         function loadChecklist() {
-            const status = JSON.parse(localStorage.getItem('ice_check') || '{}');
+            const status = JSON.parse(localStorage.getItem('ice_check_2026') || '{}');
             const container = document.getElementById('checklist-container');
             container.innerHTML = checklistItems.map(item => `
                 <div class="check-item">
@@ -265,13 +279,13 @@
         }
 
         function toggleCheck(item) {
-            const status = JSON.parse(localStorage.getItem('ice_check') || '{}');
+            const status = JSON.parse(localStorage.getItem('ice_check_2026') || '{}');
             status[item] = !status[item];
-            localStorage.setItem('ice_check', JSON.stringify(status));
+            localStorage.setItem('ice_check_2026', JSON.stringify(status));
         }
 
         function showFocus(is, en) {
-            document.getElementById('focus-text').innerHTML = `<h1 style="font-size:3rem">${is}</h1><p>${en}</p>`;
+            document.getElementById('focus-text').innerHTML = `<h1 style="font-size:2.5rem; margin-bottom:10px;">${is}</h1><p style="font-size:1.2rem;">${en}</p>`;
             document.getElementById('focus-modal').style.display = 'flex';
         }
 
@@ -289,7 +303,6 @@
             renderDay(2); // 預設顯示第二天
             loadExpenses();
             loadChecklist();
-            // 隨機風速警報測試
             if(Math.random() > 0.4) document.getElementById('storm-alert').style.display = 'block';
         };
     </script>
